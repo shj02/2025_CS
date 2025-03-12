@@ -1,0 +1,16 @@
+도구상자 : 자료형
+c언어 : char o string x
+python : char x string o
+c# : char o string o
+
+python : a = "abc" -> a[0] => "a"
+c# : a = "abc" -> a[0] => 'a'
+
+\r\n -> win 줄바꿈
+
+단축키
+실행 : f5
+실행종료 : shift f5
+(연속된) 여러 라인 수정 : alt shift 방향키
+자동 들여쓰기 : ctrl k f
+라인 지우기 : ctrl l
