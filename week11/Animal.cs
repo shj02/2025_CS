@@ -19,6 +19,7 @@ namespace ZooApp {
             _color = color;
         }
 
+        //Object 클래스의 ToString()을 override(재정의)한다.
         public override string ToString() {
             return $"ANIMAL: {_name}";
         }
