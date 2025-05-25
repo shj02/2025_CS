@@ -35,7 +35,7 @@ namespace Week09Homework
         END,
     }
 
-    class Student
+    class Student : Member
     {
         //static 필드
         public static Dictionary<YEAR, string> YearName
@@ -54,14 +54,14 @@ namespace Week09Homework
                 { REG_STATUS.EXPELLED,    "퇴학"},
             };
 
-        public string Number { get; private set; }
-        public string Name { get; private set; }
+        //public string Number { get; private set; }
+        //public string Name { get; private set; }
         public DateTime BirthInfo { get; private set; }
         public void SetBirthInfo(int year, int month, int day)
         {
             BirthInfo = new DateTime(year, month, day);
         }
-        public string DepartmentCode { get; set; }
+        //public string DepartmentCode { get; set; }
         public string AdvisorNumber { get; set; }
         public YEAR Year { get; set; }
         public CLASS Class { get; set; }
@@ -69,10 +69,16 @@ namespace Week09Homework
         public string Address { get; set; }
         public string Contact { get; set; }
 
-        public Student(string number, string name)
+        public Student(string number, string name) : base(number, name, null)
         {
-            Number = number;
-            Name = name;
+            //Number = number;
+            //Name = name;
+        }
+
+        //오버로딩
+        public Student(string number, string name, Department dept) : base(number, name, dept) {
+            //Number = number;
+            //Name = name;
         }
 
         public override string ToString()
