@@ -1,42 +1,53 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ZooApp
 {
-    class Cat : Animal
-    {
-        public Cat(string name, COLOR color) : base(name, color) {
-
+    class Cat :Animal
+    {   
+        public Cat(string name, COLOR color)
+            : base(name, color)
+        {
         }
 
-        public override string ToString() {
-            return $"CAT: {Name}";
+        //Object 클래스의 ToString()을
+        //override(재정의)한다.
+        public override string ToString()
+        {
+            return $"CAT:{Name}";
         }
 
-        public string Meow(int count) {
+        public string Meow(int count)
+        {
             string retValue = "";
-            for (int i=0; i<count; i++) {
-                retValue = "냥!";
+            for (int i = 0; i < count; i++) {
+                retValue += "냥!";
             }
             return retValue;
         }
 
-        public override void Eat() { AddLevel(300); } 
-
-        public new void Play() { AddLevel(200); }
-
-        protected override bool AddLevel(int level) {
+        protected override bool AddLevel(int level)
+        {
             if (_level + level <= 2000) {
                 _level += level;
                 return true;
             } else {
-                _level = 2000;
+                _level = 200;
                 return false;
             }
+        }
+
+        public override void Eat()
+        {
+            AddLevel(300);
+        }
+
+        public new void Play()
+        {
+            AddLevel(200);
         }
     }
 }
