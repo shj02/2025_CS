@@ -8,19 +8,33 @@ namespace ZooApp
 {
     class RobotDog : Dog, IRobot
     {
-        public RobotDog(string n, COLOR c, int y) : base(n, c, y) {
+        public RobotDog
+            (string name, COLOR color, int year) : base(name, color, year)
+        {
 
         }
 
-        public override string ToString() {
-            return $"ROBOTDOG: {Name}";
+        int _batteryLevel;
+        public int BatteryLevel
+        {
+            get { return _batteryLevel; }
+            set {
+                if (value > 1000) {
+                    _batteryLevel = 1000;
+                } else {
+                    _batteryLevel = value;
+                }
+            }
         }
 
-        //자동 구현 프로퍼티 o
-        public int BatteryLevel { get; set; }
-
-        public void Charge() {
+        public void Charge()
+        {
             BatteryLevel = 1000;
+        }
+
+        public override string ToString()
+        {
+            return $"ROBOTDOG:{Name}";
         }
     }
 }
