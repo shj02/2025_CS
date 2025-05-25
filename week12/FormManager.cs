@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -7,6 +8,22 @@ namespace Week09Homework
 {
     public partial class FormManager : Form
     {
+        public string PATH {
+            get {
+                var path = "c:\\class_b";
+                if (false == Directory.Exists(path)) {
+                    Directory.CreateDirectory(path);
+                }
+                return path;
+            }
+        }
+
+        public string DepartmentFullFileName {
+            get {
+                return Path.Combine(PATH, "department.txt");
+            }
+        }
+
         Department[] departments;
         List<Professor> professors;
         Dictionary<string, Student> students;
@@ -46,26 +63,46 @@ namespace Week09Homework
                 tbxTestScore9,
             };
 
-            departments[0] = new Department("A001", "컴퓨터정보");
+            //departments[0] = new Department("A001", "컴퓨터정보");
 
-            departments[1] = new Department("A002", "컴퓨터시스템");
+            //departments[1] = new Department("A002", "컴퓨터시스템");
 
-            for (int i = 0; i < departments.Length; i++) {
-                if (departments[i] != null) {
-                    lbxDepartment.Items.Add(departments[i]);
-                }
+            //for (int i = 0; i < departments.Length; i++) {
+            //    if (departments[i] != null) {
+            //        lbxDepartment.Items.Add(departments[i]);
+            //    }
+            //}
+
+            //파일복구. (단, 파일이 있어야 함)
+            if(true == File.Exists(DepartmentFullFileName)) {
+                //파일처리 3단계
+                using (var fs = new FileStream(DepartmentFullFileName, FileMode.Open)) { //열고
+                    using (var sr = new StreamReader(fs)) {
+                        int deptIndex = 0;
+                        while(false == sr.EndOfStream) {
+                            var data = sr.ReadLine(); //한줄씩 읽음
+                            var dept = Department.Restore(data);
+                            if(dept != null) {
+                                departments[deptIndex++] = dept;
+                                lbxDepartment.Items.Add(dept);
+                            }
+
+                        } //추가해
+                    }
+                } //닫고
             }
 
-            professors.Add(new Professor("2020001", departments[0].Code, "김인하"));
+            professors.Add(new Professor("2020001", "김인하", departments[0]));
 
-            professors.Add(new Professor("2023003", "김정석", departments[0].Code));
+            professors.Add(new Professor("2023003", "김정석", departments[0]));
 
-            professors.Add(new Professor("2023004", "이공전", departments[1].Code));
+            professors.Add(new Professor("2023004", "이공전", departments[1]));
 
             students.Add("20240001", new Student("20240001", "김미영") {
                 RegStatus = REG_STATUS.ENROLLED,
                 Year = YEAR.ONE,
-                DepartmentCode = "A001",
+                //LINQ - array, collection + db query
+                Dept = departments.FirstOrDefault(m=> m.Code == "A001"),
                 AdvisorNumber = "2020001",
                 Class = CLASS.B,
                 Address = "인천 남구 용현동 100",
@@ -121,6 +158,13 @@ namespace Week09Homework
             departments[index] = dept;
 
             lbxDepartment.Items.Add(dept);
+
+            //파일처리 3단계
+            using (var fs = new FileStream(DepartmentFullFileName, FileMode.Append)) { //열고
+                using (var sw = new StreamWriter(fs)) {
+                    sw.WriteLine(dept.Record); //추가해
+                }
+            } //닫고
         }
 
         private void btnRemoveDepartment_Click(object sender, EventArgs e)
@@ -142,6 +186,15 @@ namespace Week09Homework
 
                 lbxDepartment.Items.RemoveAt(lbxDepartment.SelectedIndex);
                 lbxDepartment.SelectedIndex = -1;
+
+                //파일처리 3단계
+                using (var fs = new FileStream(DepartmentFullFileName, FileMode.Create)) { //열고
+                    using (var sw = new StreamWriter(fs)) {
+                        foreach(var dept in departments) {
+                            sw.WriteLine(dept.Record); //추가해
+                        }
+                    }
+                } //닫고
             }
         }
 
@@ -200,7 +253,7 @@ namespace Week09Homework
 
             if (department != null) {
                 foreach (var professor in professors) {
-                    if (professor != null && professor.DepartmentCode == department.Code) {
+                    if (professor != null && professor.Dept.Code == department.Code) {
                         lbxProfessor.Items.Add(professor);
                     }
                 }
@@ -241,7 +294,7 @@ namespace Week09Homework
                 }
             }
 
-            Professor professor = new Professor(tbxProfessorNumber.Text, tbxProfessorName.Text, dept.Code);
+            Professor professor = new Professor(tbxProfessorNumber.Text, tbxProfessorName.Text, dept);
 
             professors.Add(professor);
             lbxProfessor.Items.Add(professor);
@@ -282,7 +335,7 @@ namespace Week09Homework
             }
 
             foreach (var professor in professors) {
-                if (professor != null && professor.DepartmentCode == dept.Code) {
+                if (professor != null && professor.Dept.Code == dept.Code) {
                     cmbAdvisor.Items.Add(professor);
                 }
             }
@@ -400,9 +453,9 @@ namespace Week09Homework
             student.SetBirthInfo(birthYear, birthMonth, birthDay);
 
             if (cmbDepartment.SelectedIndex < 0) {
-                student.DepartmentCode = null;
+                student.Dept = null;
             } else {
-                student.DepartmentCode = (cmbDepartment.SelectedItem as Department).Code;
+                student.Dept = cmbDepartment.SelectedItem as Department;
             }
 
             if (cmbAdvisor.SelectedIndex < 0) {
@@ -501,9 +554,9 @@ namespace Week09Homework
             selectedStudent.SetBirthInfo(birthYear, birthMonth, birthDay);
 
             if (cmbDepartment.SelectedIndex < 0) {
-                selectedStudent.DepartmentCode = null;
+                selectedStudent.Dept = null;
             } else {
-                selectedStudent.DepartmentCode = (cmbDepartment.SelectedItem as Department).Code;
+                selectedStudent.Dept = cmbDepartment.SelectedItem as Department;
             }
 
             if (cmbAdvisor.SelectedIndex < 0) {
@@ -550,7 +603,7 @@ namespace Week09Homework
             tbxBirthDay.Text = student.BirthInfo.Day.ToString();
 
             for (int i = 0; i < cmbDepartment.Items.Count; i++) {
-                if ((cmbDepartment.Items[i] as Department).Code == student.DepartmentCode) {
+                if ((cmbDepartment.Items[i] as Department).Code == student.Dept.Code) {
                     cmbDepartment.SelectedIndex = i;
                     break;
                 }
