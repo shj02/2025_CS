@@ -1,7 +1,8 @@
 # 목차
 - A. 메서드  
 [A-1. 메서드](#A-1.-메서드)  
-[A-2. 정적(static) 메서드](A-2.-정적-static--메서드)
+[A-2. 정적(static) 메서드](A-2.-정적(static)-메서드)
+[A-3. 오버로딩](A-3.-오버로딩)
 
 ## A-1. 메서드
 \[접근 제한자\] (static) \[반환형\] \[메서드 이름\](매개변수)  
@@ -50,7 +51,8 @@ var dept = Department.Restore(data); //클래스명.메서드명() 형태로 호
 > public static : 어디서나 클래스명.메서드명()으로 호출 가능  
 > private static : 선언한 클래스 내부에서만 호출 가능
 ---
-## A-3. 오버로딩 : 이름은 갖고, 매개변수는 다른 메서드를 만드는 것
+## A-3. 오버로딩
+: 이름은 갖고, 매개변수는 다른 메서드를 만드는 것
 > overriding이랑은 완전 다름!
 ```
 private void OpenInfo(ref Department[] departments, string filename) {...}
