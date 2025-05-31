@@ -1,4 +1,8 @@
-## 메서드
+# 목차
+- A. 메서드
+[A-1. 메서드](#A-1.-메서드)
+
+## A-1. 메서드
 \[접근 제한자\] (static) \[반환형\] \[메서드 이름\](매개변수)  
 
 ### 반환타입 void : 아무것도 반환하지 않음
@@ -15,7 +19,7 @@ public void Print() //매개변수 없어도 되는 경우
 }
 ```
 ---
-### 정적(static) 메서드 : 클래스의 인스턴스를 생성하지 않고 클래스 이름으로 직접 호출  
+## A-2. 정적(static) 메서드 : 클래스의 인스턴스를 생성하지 않고 클래스 이름으로 직접 호출  
 객체를 만들지 않고도 사용 가능
 ```
 Class MyClass {
@@ -44,7 +48,7 @@ var dept = Department.Restore(data); //클래스명.메서드명() 형태로 호
 > public static : 어디서나 클래스명.메서드명()으로 호출 가능  
 > private static : 선언한 클래스 내부에서만 호출 가능
 ---
-### 오버로딩 : 이름은 갖고, 매개변수는 다른 메서드를 만드는 것
+## A-3. 오버로딩 : 이름은 갖고, 매개변수는 다른 메서드를 만드는 것
 > overriding이랑은 완전 다름!
 ```
 private void OpenInfo(ref Department[] departments, string filename) {...}
@@ -53,7 +57,7 @@ private void OpenInfo(out Dictionary<string, Student> student, string filename) 
 ```
 > 매개변수가 달라야하며, 반환값이 다르면 오버로딩 X
 
-### 접근 제한자  
+## A-4. 접근 제한자  
 ### private  
 + 접근 제한자를 입력하지 않으면 자동으로 private 설정(클래스 예외 > internal)
 + 자신의 클래스 내부에서만 사용 가능
@@ -114,12 +118,12 @@ Class Product() {
 }
 ```
 
-### 상수(const)
+## A-5. 상수(const)
 + 메서드 내 지역 변수에 사용 가능
 + 클래스 내에서 사용 가능(단, static 성격)
 ---
 
-## 속성
+## A-6. 속성
 ### 게터와 세터
 + C#의 프로퍼티에서 사용하는 접근자
 + get : 값을 읽을 때, set : 값을 쓸 때
