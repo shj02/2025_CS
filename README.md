@@ -20,6 +20,10 @@
 
 ## A-1. 메서드
 \[접근 제한자\] (static) \[반환형\] \[메서드 이름\](매개변수)  
+- 인스턴스 메서드  
+  static 키워드 x  
+  반드시 객체를 생성해야만 호출 가능  
+  메서드 내부에서 인스턴스 변수(필드), 다른 인스턴스 메서드, 프로퍼티 등에 접근 가능  
 
 ### 반환타입 void : 아무것도 반환하지 않음
 ```
@@ -447,4 +451,30 @@ for (int i = 0; i < (int)REG_STATUS.END; i++) {
 List<int> numbers = new List<int>();
 numbers.Add(1);
 numbers.AddRange(new int[] {2, 3, 4});
+```
+
+## C-1. 인터페이스  
+특정한 클래스를 만들 때 사용하는 규약  
+클래스나 구조체가 반드시 구현해야 하는 멤버들의 목록(약속)만을 정의하는 일종의 설계  
+메서드와 프로퍼티에 내부 구현을 할 수 없음!
+```
+namespace Week09Homework
+{
+    interface IFile
+    {
+        string Record { get; }
+    }
+}
+```
+```
+class Department : IFile
+{
+    // ... (생략)
+
+    public string Record { //구현
+        get { return $"{Code}|{Name}"; }
+    }
+
+    // ... (생략)
+}
 ```
