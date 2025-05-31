@@ -156,7 +156,6 @@ public int Age { get; set;}
 프로퍼티(함수+변수)  
 메서드(함수)  
 ---
-```
 Department.cs
 ```
 Department(string code, string name) {...}
