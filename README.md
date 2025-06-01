@@ -21,8 +21,8 @@
 - C. 인터페이스  
 [C-1. 인터페이스](#c-1-인터페이스)
 
-- D. 파일
-
+- D. 파일  
+[D-1. 파일](#d-1-파일)
 
 ## A-1. 메서드
 \[접근 제한자\] (static) \[반환형\] \[메서드 이름\](매개변수)  
@@ -482,5 +482,122 @@ class Department : IFile
     }
 
     // ... (생략)
+}
+```
+---
+## D-1. 파일
+### 파일에 저장
+Department.cs
+```
+public string Record {
+  get { return $"{Code}|{Name}"; }
+}
+```
+FormManager.cs
+```
+private void SaveInfo(IFile data, string filename) {
+    try {
+        using (var fs = new FileStream(filename, FileMode.Append)) {
+            using (var sw = new StreamWriter(fs)) {
+                sw.WriteLine(data.Record);
+            }
+        }
+    } catch (Exception ex) {
+        MessageBox.Show(ex.Message);
+    }
+}
+```
+- FileStream : 파일을 바이트 단위로 읽거나 쓸 수 있게 해주는 클래스
+  파일을 열고, 데이터를 읽거나 스트림 객체를 만듦
+  ! 파일 작업이 끝나면 반드시 닫아야 하므로 보통 using문과 함께 사용
+```
+using System.IO;
+FileStream fs = new FileStream("test.txt", FileMode.Open);
+```
+
+- StreamReader : 텍스트 파일을 줄 단위로 읽거나, 문자를 쉽게 읽을 수 있게 해주는 클래스  
+  FileStream이나 파일 경로를 받아 텍스트를 읽음
+```
+using System.IO;
+using (FileStream fs = new FileStream("test.txt", FileMode.Open)) {
+    using (StreamReader sr = new StreamReader(fs)) {
+        string line = sr.ReadLine();
+    }
+}
+```
+
+- StreamWriter : 텍스트 데이터를 파일이나 스트림에 쓰기 위해 사용하는 클래스
+  텍스트 파일에 문자열을 한 줄씩 쓰거나 연속해서 쓸 수 있음
+- Write(string) : 문자열을 파일에 쓰고 줄바꿈 없음
+- WriteLine(string) : 문자열을 파일에 쓰고 줄바꿈 추가
+- Flush() : 버퍼에 있는 내용을 즉시 파일에 씀
+- Close() 또는 Dispose() : 스트림을 닫고 자원을 해제
+```
+using (StreamReader sr = new StreamReader("test.txt")) {
+    string line = sr.ReadLine();
+}
+```
+
+- FileMode의 종류
+
+|값|설명|
+|---|---|
+|Append|파일이 있으면 열어서 끝에 추가, 없으면 새로 만듦(쓰기 전용, 기존 내용 보존)|
+|Create|새 파일을 만듦, 파일이 이미 있으면 내용을 모두 덮어씀|
+|CreateNew|새 파일을 만듦, 파일이 이미 있으면 **예외 발생**|
+|Open|이미 있는 파일을 엶, 파일이 없으면 **예외 발생**|
+|OpenOrCreate|파일이 있으면 엶, 파일이 없으면 새로 만듦|
+|Turncate|이미 있는 파일을 엶, 열자마자 내용을 모두 지움(0바이트로 만듦), 파일이 없으면 **예외 발생**|
+
+### 파일에서 읽기
+```
+private void OpenInfo(ref Department[] departments, string filename) {
+    if (true == File.Exists(filename)) {
+        using (var fs = new FileStream(filename, FileMode.Open)) {
+            using (var sr = new StreamReader(fs)) {
+                int deptIndex = 0;
+                while (false == sr.EndOfStream) {
+                    var data = sr.ReadLine(); // 한 줄씩 읽기
+                    var dept = Department.Restore(data); // 문자열 → 객체로 복원
+                    if (dept != null && deptIndex < departments.Length) {
+                        departments[deptIndex++] = dept;
+                        lbxDepartment.Items.Add(dept);
+                    }
+                }
+            }
+        }
+    }
+}
+```
+Department.cs
+```
+public static Department Restore(string record)
+{
+    Department dept = null;
+    try {
+        var splitdatas = record.Trim().Split(new char[] { '|' });
+        dept = new Department(splitdatas[0], splitdatas[1]);
+    } catch (IndexOutOfRangeException ex) {
+        MessageBox.Show("파일 포맷이 잘못되었음");
+        Console.WriteLine(ex);
+    } catch (Exception ex) {
+        Console.WriteLine(ex);
+    }
+    return dept;
+}
+```
+
+### 삭제/수정
+```
+private void DeleteInfo(Department[] departments, string filename) {
+    using (var fs = new FileStream(filename, FileMode.Create)) {
+        using (var sw = new StreamWriter(fs)) {
+            foreach (var dept in departments) {
+                if(dept != null) {
+                    sw.WriteLine(dept.Record);
+                }
+            }
+        }
+    }
 }
 ```
